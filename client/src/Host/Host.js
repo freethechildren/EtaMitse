@@ -7,17 +7,12 @@ export default class Host extends Component {
 		super(props);
 
 		this.state = {
-			// DEBUG
-			clients: {
-				// [0]: {
-				// 	name: "Shazz",
-				// 	estimate: 2,
-				// }
-			},
+			clients: {},
 			revealing: false,
 		};
 
-		this.connection = new WebSocket("ws://127.0.0.1:8080");
+		this.connection = new WebSocket("wss://etamitse.herokuapp.com");
+		// this.connection = new WebSocket("ws://10.218.40.40:8080");
 		// this.addEventListener("open", )
 		this.connection.addEventListener("message", this.onMessage);
 	}
