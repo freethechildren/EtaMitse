@@ -1,30 +1,25 @@
-const Server = require("websocket").server
-const http = require("http")
+const express = require("express")
+const SocketServer = require("ws").Server
+const path = require("path")
 
-const httpServer = http.createServer(function(request, response) {
-  console.log(new Date() + " Received request for " + request.url)
-  response.writeHead(404)
-  response.end()
-})
+const PORT = process.env.PORT || 8080
+const INDEX = path.join(__dirname, "index.html")
 
-httpServer.listen(8080, function() {
-  console.log(new Date() + " Server is listening on port 8080")
-})
+const server = express()
+  .use((req, res) => res.sendFile(INDEX))
+  .listen(PORT, () => console.log(`Listening on ${PORT}`))
 
-const server = new Server({
-  httpServer: httpServer,
-  autoAcceptConnections: true
-})
+wss = new SocketServer({ server })
 
 let host = null
 let clients = {}
 let currentClientID = 0
 
 function send(connection, message) {
-  connection.sendUTF(JSON.stringify(message))
+  connection.send(JSON.stringify(message))
 }
 
-server.on("connect", connection => {
+wss.on("connection", connection => {
   console.log("Connection established!")
 
   let isHost = false
@@ -40,33 +35,31 @@ server.on("connect", connection => {
   send(connection, { clientID })
 
   connection.on("message", message => {
-    if (message.type === "utf8") {
-      const data = JSON.parse(message.utf8Data)
-      switch (data.command) {
-        case "set_name":
-          clients[clientID].name = data.name
-          send(host.connection, {
-            command: "new_client",
-            id: clientID,
-            name: data.name
-          })
-          break
-        case "estimate":
-          clients[clientID].estimate = data.estimate
-          send(host.connection, {
-            command: "estimate",
-            id: clientID,
-            estimate: data.estimate
-          })
-          break
-        case "new_round":
-          if (!isHost) break
-          Object.keys(clients).forEach(clientID => {
-            delete clients[clientID].estimate
-            send(clients[clientID].connection, { command: "new_round" })
-          })
-          break
-      }
+    const data = JSON.parse(message)
+    switch (data.command) {
+      case "set_name":
+        clients[clientID].name = data.name
+        send(host.connection, {
+          command: "new_client",
+          id: clientID,
+          name: data.name
+        })
+        break
+      case "estimate":
+        clients[clientID].estimate = data.estimate
+        send(host.connection, {
+          command: "estimate",
+          id: clientID,
+          estimate: data.estimate
+        })
+        break
+      case "new_round":
+        if (!isHost) break
+        Object.keys(clients).forEach(clientID => {
+          delete clients[clientID].estimate
+          send(clients[clientID].connection, { command: "new_round" })
+        })
+        break
     }
   })
 
