@@ -67,6 +67,7 @@ wss.on("connection", connection => {
     if (isHost) {
       host = null
     } else {
+      clients[clientID].close()
       delete clients[clientID]
       send(host.connection, { command: "client_disconnect", id: clientID })
     }
