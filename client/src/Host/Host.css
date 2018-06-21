@@ -1,0 +1,7 @@
+.client {
+    color: red;
+}
+
+.client.estimated {
+    color: green;
+}
