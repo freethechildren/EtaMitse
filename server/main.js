@@ -62,9 +62,12 @@ server.on('connect', (connection) => {
 		}
 	});
 
-	connection.on('close', (reasonCode, description) => {
-		console.log((new Date()) + ' Peer ' + connection.remoteAddress + ' disconnected.');
-		delete clients[clientID];
-		send(host.connection, { command: "client_disconnect", id: clientID});
+	connection.on('close', () => {
+		if (isHost) {
+			host = null;
+		} else {
+			delete clients[clientID];
+			send(host.connection, { command: "client_disconnect", id: clientID });
+		}
 	});
 });
