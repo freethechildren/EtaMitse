@@ -1,4 +1,4 @@
-import React, { Fragment, Component } from 'react';
+import React, { Fragment, Component } from "react"
 
 import constants from "./constants";
 import utilities from "./utilities"
@@ -8,8 +8,8 @@ const { SERVER_URL } = constants;
 const s = JSON.stringify;
 
 class App extends Component {
-	constructor(props) {
-		super(props);
+  constructor(props) {
+    super(props)
 
 		this.state = {
       connection: null,
@@ -132,4 +132,4 @@ class App extends Component {
 	}
 }
 
-export default App;
+export default App
