@@ -1,10 +1,10 @@
 import React, { Fragment, Component } from "react";
 
-import "./Client.css";
+import "./Member.css";
 
 const POSSIBLE_ESTIMATES = [0.5, 1, 2, 3, 5, 8, 13];
 
-export default class Client extends Component {
+export default class Member extends Component {
 	constructor(props) {
         super(props);
         
@@ -15,9 +15,7 @@ export default class Client extends Component {
             revealed: false,
         };
 
-		this.connection = new WebSocket("wss://etamitse.herokuapp.com");
-        // this.connection = new WebSocket("ws://10.218.40.40:8080");
-        // this.addEventListener("open", )
+        this.connection = new WebSocket(constants.SERVER_URL);
 		this.connection.addEventListener("message", this.onMessage);
     }
 

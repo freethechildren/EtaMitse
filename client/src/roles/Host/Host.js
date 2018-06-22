@@ -11,8 +11,7 @@ export default class Host extends Component {
 			revealing: false,
 		};
 
-		this.connection = new WebSocket("wss://etamitse.herokuapp.com");
-		// this.connection = new WebSocket("ws://10.218.40.40:8080");
+		this.connection = new WebSocket(SERVER_URL);
 		// this.addEventListener("open", )
 		this.connection.addEventListener("message", this.onMessage);
 	}
