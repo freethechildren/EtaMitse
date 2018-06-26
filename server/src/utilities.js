@@ -1,3 +1,5 @@
+const { MEETING_CODE_DIGITS } = require("./constants");
+
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
 const getRandomIntInclusive = (min, max) => {
   min = Math.ceil(min);
@@ -6,7 +8,5 @@ const getRandomIntInclusive = (min, max) => {
 }
 
 module.exports = {
-  generateMeetingCode: () => {
-    return getRandomIntInclusive(1000, 9999); // 4-digit code
-  },
+  generateMeetingCode: () => getRandomIntInclusive(10 ** (MEETING_CODE_DIGITS - 1), (10 ** MEETING_CODE_DIGITS) - 1),
 };
