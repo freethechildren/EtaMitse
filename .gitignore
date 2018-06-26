@@ -71,3 +71,9 @@ typings/
 
 # Serverless directories
 .serverless
+
+# TASKS
+TASKS.md
+
+# misc
+.DS_Store
