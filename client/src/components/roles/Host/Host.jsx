@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 
+import utilities from "../../../utilities";
 import "./Host.css";
+
+const { composeClassName } = utilities;
 
 export default class Host extends Component {
   /* Instance fields. */
@@ -52,7 +55,7 @@ export default class Host extends Component {
         Object.values(members).forEach((member) => {
           member.estimate = null;
         });
-        this.setState({ error: null, members });
+        this.setState({ error: null, revealing: false, members });
       } else {
         this.setState({ error });
       }
@@ -85,11 +88,29 @@ export default class Host extends Component {
     return (
       <div className="component-Host">
         <div className="error">{this.state.error}</div>
-        <ul>
+        <ul className="member-list">
           {
             Object.keys(this.state.members).map((memberID) => {
               const member = this.state.members[memberID];
-              return <li key={memberID}>{member.name}{this.state.revealing ? ` said ${member.estimate}` : ""}</li>;
+
+              const className = composeClassName("member", {
+                estimated: member.estimate !== null,
+              });
+
+              let status = "";
+              if (this.state.revealing) {
+                if (member.estimate !== null) status = `said ${member.estimate}`;
+                else status = "did not estimate";
+              }
+
+              return (
+                <li
+                  key={memberID}
+                  className={className}
+                >
+                  {member.name} {status}
+                </li>
+              );
             })
           }
         </ul>
@@ -97,38 +118,5 @@ export default class Host extends Component {
         <button onClick={this.startNewRound}>Start New Round</button>
       </div>
     );
-
-    // const { clients, revealing } = this.state
-
-    // const clientList = Object.keys(clients).map(clientID => {
-    //   const client = clients[clientID]
-
-    //   return (
-    //     <li
-    //       key={clientID}
-    //       className={`client ${
-    //         client.estimate !== undefined ? "estimated" : ""
-    //       }`}
-    //     >
-    //       {client.name}
-    //       {revealing ? ` said ${client.estimate}` : ""}
-    //     </li>
-    //   )
-    // })
-
-    // return (
-    //   <Fragment>
-    //     <ul>{clientList}</ul>
-    //     <button
-    //       className="waves-effect waves-light btn"
-    //       onClick={this.newRound}
-    //     >
-    //       New Round
-    //     </button>
-    //     <button className="waves-effect waves-light btn" onClick={this.reveal}>
-    //       Reveal
-    //     </button>
-    //   </Fragment>
-    // )
   }
 }

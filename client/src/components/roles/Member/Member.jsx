@@ -65,7 +65,7 @@ export default class Member extends Component {
         <div className="possible-estimates">
           {
             POSSIBLE_ESTIMATES.map((possibleEstimate) => {
-              const className = composeClassName({
+              const className = composeClassName("estimate", {
                 selected: this.state.estimate === possibleEstimate,
               });
 

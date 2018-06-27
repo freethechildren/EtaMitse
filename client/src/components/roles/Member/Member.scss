@@ -1,0 +1,9 @@
+.component-Member {
+    > .possible-estimates {
+        > .estimate {
+            display: block;
+            height: 50px;
+            width: 100%;
+        }
+    }
+}
