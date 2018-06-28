@@ -1,0 +1,29 @@
+{
+  "name": "etamitse",
+  "version": "0.1.0",
+  "description": "Easy and bias-free estimating in meetings.",
+  "private": true,
+  "license": "MIT",
+  "homepage": "https://github.com/ShazzAmin/EtaMitse#readme",
+  "bugs": {
+    "url": "https://github.com/ShazzAmin/EtaMitse/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ShazzAmin/EtaMitse.git"
+  },
+  "scripts": {
+    "install:server": "cd server && npm install",
+    "install:client": "cd client && npm install",
+    "postinstall": "run-p --print-label install:*",
+    "start:server": "cd server && npm start",
+    "start:client": "cd client && npm start",
+    "start": "run-p --print-label start:*",
+    "build:server": "cd server && npm run build",
+    "build:client": "cd client && npm run build",
+    "build": "run-p --print-label build:*"
+  },
+  "devDependencies": {
+    "npm-run-all": "^4.1.3"
+  }
+}

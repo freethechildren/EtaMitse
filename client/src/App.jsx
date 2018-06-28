@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from "react"
 
-import constants from "./constants";
+import constants from "./includes/constants";
 import { SingleInput } from "./components/common";
 import { Host, Member } from "./components/roles";
 import "./App.css";

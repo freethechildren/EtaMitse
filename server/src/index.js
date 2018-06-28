@@ -1,7 +1,7 @@
 const express = require("express");
 const ws = require("ws");
-const { POSSIBLE_ESTIMATES } = require("./constants");
-const { generateMeetingCode } = require("./utilities");
+const { POSSIBLE_ESTIMATES } = require("./includes/constants");
+const { generateMeetingCode } = require("./includes/utilities");
 
 const PORT = process.env.PORT || 8080;
 

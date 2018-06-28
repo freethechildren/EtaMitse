@@ -1,14 +1,12 @@
 {
-  "name": "etamitse-server",
-  "version": "1.0.0",
   "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "server": "node src/index.js",
-    "start": "npm-watch server"
+    "exec": "node src/index.js",
+    "start": "npm-watch exec",
+    "build": "cp src/ build/"
   },
   "watch": {
-    "server": "src/**/*.*"
+    "exec": "src/**/*.js"
   },
   "dependencies": {
     "express": "^4.16.3",

@@ -1,11 +1,11 @@
 .component-Host {
-    > .member-list {
-        > .member {
-            color: red;
+  > .member-list {
+    > .member {
+      color: red;
 
-            &.estimated {
-                color: green;
-            }
-        }
+      &.estimated {
+        color: green;
+      }
     }
+  }
 }
