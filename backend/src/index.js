@@ -1,5 +1,7 @@
 const express = require("express");
 const ws = require("ws");
+const path = require("path");
+
 const { POSSIBLE_ESTIMATES } = require("./includes/constants");
 const { generateMeetingCode } = require("./includes/utilities");
 
@@ -164,7 +166,7 @@ const onClientDisconnect = (client) => {
 
 // HTTP server
 const webServer = express()
-  .use((request, response) => response.status(404).end())
+  .use(express.static(path.join(__dirname, "public/")))
   .listen(PORT, () => console.log(`Listening on *:${PORT}.`));
 
 // WebSocket server

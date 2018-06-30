@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from "react"
 
 import constants from "./includes/constants";
-import { SingleInput } from "./components/common";
+import { SingleInputForm } from "./components/common";
 import { Host, Member } from "./components/roles";
 import "./App.css";
 
@@ -179,7 +179,7 @@ export default class App extends Component {
 
     if (this.state.name === null) {
       return (
-        <SingleInput
+        <SingleInputForm
           type="text"
           placeholder="Name"
           buttonText="Submit"
@@ -191,8 +191,11 @@ export default class App extends Component {
     if (this.state.meeting === null) {
       return (
         <Fragment>
+          <h5>Host a meeting</h5>
           <button onClick={this.createMeeting}>Create meeting</button>
-          <SingleInput
+          <hr />
+          <h5>Join a meeting</h5>
+          <SingleInputForm
             type="number"
             placeholder="Meeting code"
             buttonText="Go"

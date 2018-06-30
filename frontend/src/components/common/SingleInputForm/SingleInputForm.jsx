@@ -1,9 +1,9 @@
 import React, { PureComponent } from "react";
 import PropTypes from "prop-types";
 
-import "./SingleInput.css";
+import "./SingleInputForm.css";
 
-export default class SingleInput extends PureComponent {
+export default class SingleInputForm extends PureComponent {
   static propTypes = {
     type: PropTypes.oneOf(["text", "number"]).isRequired,
     buttonText: PropTypes.string.isRequired,
@@ -47,7 +47,7 @@ export default class SingleInput extends PureComponent {
     const { type, buttonText, onSubmit, value, ...passthroughProps } = this.props;
 
     return (
-      <div className="component-SingleInput">
+      <div className="component-SingleInputForm">
         <form onSubmit={this.onSubmit} noValidate>
           <input {...passthroughProps} type={type} onChange={this.onChange} />
           <button type="submit">{buttonText}</button>
