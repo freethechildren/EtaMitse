@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-import utilities from "../../../utilities";
+import utilities from "../../../includes/utilities";
 import "./Host.css";
 
 const { composeClassName } = utilities;

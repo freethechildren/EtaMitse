@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 
-import constants from "../../../constants";
-import utilities from "../../../utilities";
+import constants from "../../../includes/constants";
+import utilities from "../../../includes/utilities";
 import "./Member.css";
 
 const { POSSIBLE_ESTIMATES } = constants;

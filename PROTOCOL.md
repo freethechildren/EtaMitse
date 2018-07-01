@@ -10,7 +10,7 @@ Each `message` is a JSON-encoded string representing an object. The object must 
 - `payload`: an object
 
 #### Action
-An `action`s can be initiated by either party (client or server). The `payload` object must contain these properties:
+An `action` can be initiated by either party (client or server). The `payload` object must contain these properties:
 - `action`: a string
 - `data`: an object
 
