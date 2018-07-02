@@ -1,4 +1,10 @@
-const { getEnvironmentVariables } = require("./utilities");
+const getEnvironmentVariables = (variableNames) => {
+  const variables = {};
+  variableNames.forEach((variableName) => {
+    variables[variableName] = process.env[variableName];
+  });
+  return variables;
+};
 
 module.exports = {
   ...getEnvironmentVariables([
