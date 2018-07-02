@@ -6,7 +6,7 @@
     "start:env": "(cat .env.local > .env 2> /dev/null; cat .env.development >> .env 2> /dev/null; cat .env.development.local >> .env 2> /dev/null) || true",
     "start": "run-p --print-label start:* && npm-watch exec",
     "build:env": "(cat .env.local > build/.env; cat .env.production >> build/.env; cat .env.production.local >> build/.env) || true",
-    "build": "rm -rf build/ && mkdir build && run-p --print-label build:* && cp -r src/ build/ && cp package.json build/"
+    "build": "rm -rf build/ && mkdir build && run-p --print-label build:* && cp -r src/. build/ && cp package.json build/"
   },
   "watch": {
     "exec": "src/**/*.js"
