@@ -1,4 +1,12 @@
 export default {
+  getEnvironmentVariables: (variableNames) => {
+    const variables = {};
+    variableNames.forEach((variableName) => {
+      variables[variableName] = process.env[`REACT_APP_${variableName}`];
+    });
+    return variables;
+  },
+
   composeClassName: (...args) => {
     let composedClassName = "";
 

@@ -1,11 +1,11 @@
+require("dotenv").config();
+
 const express = require("express");
 const ws = require("ws");
 const path = require("path");
 
-const { POSSIBLE_ESTIMATES } = require("./includes/constants");
+const { NETWORK_PORT, POSSIBLE_ESTIMATES } = require("./includes/constants");
 const { generateMeetingCode } = require("./includes/utilities");
-
-const PORT = process.env.PORT || 8080;
 
 const meetings = {};
 
@@ -167,7 +167,7 @@ const onClientDisconnect = (client) => {
 // HTTP server
 const webServer = express()
   .use(express.static(path.join(__dirname, "public/")))
-  .listen(PORT, () => console.log(`Listening on *:${PORT}.`));
+  .listen(NETWORK_PORT, () => console.log(`Listening on *:${NETWORK_PORT}.`));
 
 // WebSocket server
 let lastClientID = -1;

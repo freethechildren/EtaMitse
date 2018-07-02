@@ -7,6 +7,9 @@ const getRandomIntInclusive = (min, max) => {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+const MEETING_CODE_MIN = 10 ** (MEETING_CODE_DIGITS - 1);
+const MEETING_CODE_MAX = (10 ** MEETING_CODE_DIGITS) - 1;
+
 module.exports = {
-  generateMeetingCode: () => getRandomIntInclusive(10 ** (MEETING_CODE_DIGITS - 1), (10 ** MEETING_CODE_DIGITS) - 1),
+  generateMeetingCode: () => getRandomIntInclusive(MEETING_CODE_MIN, MEETING_CODE_MAX),
 };
