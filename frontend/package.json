@@ -4,10 +4,10 @@
   "scripts": {
     "start:sass": "node-sass-chokidar src/ -o src/ --watch --output-style expanded",
     "start:app": "react-scripts start | cat",
-    "start": "run-p --print-label start:*",
+    "start": "FORCE_COLOR=1 run-p --print-label start:*",
     "build:sass": "node-sass-chokidar src/ -o src/ --output-style expanded",
     "build:app": "react-scripts build",
-    "build": "run-s --print-label build:sass build:app"
+    "build": "FORCE_COLOR=1 run-s --print-label build:sass build:app"
   },
   "devDependencies": {
     "npm-run-all": "^4.1.3",

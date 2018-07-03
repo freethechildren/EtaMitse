@@ -15,13 +15,13 @@
   "scripts": {
     "install:backend": "cd backend && npm install",
     "install:frontend": "cd frontend && npm install",
-    "postinstall": "run-p --print-label install:*",
+    "postinstall": "FORCE_COLOR=1 run-p --print-label install:*",
     "start:backend": "cd backend && npm start",
     "start:frontend": "cd frontend && npm start",
-    "start": "run-p --print-label start:*",
+    "start": "FORCE_COLOR=1 run-p --print-label start:*",
     "build:backend": "cd backend && npm run build",
     "build:frontend": "cd frontend && npm run build",
-    "build": "run-p --print-label build:* && rm -rf build/ && mv backend/build/ build/ && mv frontend/build/ build/public/ && cp package.json build/project-package.json"
+    "build": "FORCE_COLOR=1 run-p --print-label build:* && rm -rf build/ && mv backend/build/ build/ && mv frontend/build/ build/public/ && cp package.json build/project-package.json"
   },
   "devDependencies": {
     "npm-run-all": "^4.1.3"
