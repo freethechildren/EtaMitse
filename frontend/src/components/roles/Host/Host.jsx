@@ -89,7 +89,7 @@ export default class Host extends Component {
   /* Misc. */
 
   autoReveal = async () => {
-    if (!this.state.revealing && this.state.autoReveal) {
+    if (!this.state.revealing && this.state.autoReveal && Object.keys(this.state.members).length > 0) {
       const hasEveryMemberEstimated = Object.values(this.state.members).every((member) => "estimate" in member);
       if (hasEveryMemberEstimated) {
         for (let i = AUTO_REVEAL_GRACE_PERIOD; i > 0; i--) {
