@@ -176,16 +176,13 @@ export default class Host extends Component {
 
     const revealingInText = this.state.revealingIn === null ? null : `Revealing in ${this.state.revealingIn}`;
 
-    let resultText = null;
-    if (this.state.revealing) {
-      const roundedEstimatesMean = Math.round(estimatesMean * (10 ** ESTIMATES_MEAN_DECIMAL_PRECISION)) / 10 ** ESTIMATES_MEAN_DECIMAL_PRECISION;
-      resultText = numberOfMembersWhoEstimated > 0 ? (
-        <Fragment>
-          Mode: {estimatesMode}<br />
-          Mean: {roundedEstimatesMean}
-        </Fragment>
-      ) : "Nobody estimated :(";
-    }
+    const roundedEstimatesMean = Math.round(estimatesMean * (10 ** ESTIMATES_MEAN_DECIMAL_PRECISION)) / 10 ** ESTIMATES_MEAN_DECIMAL_PRECISION;
+    const resultText = this.state.revealing && numberOfMembersWhoEstimated > 0 ? (
+      <Fragment>
+        Mode: {estimatesMode}<br />
+        Mean: {roundedEstimatesMean}
+      </Fragment>
+    ) : null;
 
     return (
       <div className="component-Host">
