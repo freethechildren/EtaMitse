@@ -1,10 +1,19 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
+import {
+  Typography,
+  FormControlLabel,
+  Checkbox,
+  Switch,
+  List,
+  ListItem,
+  ListItemText,
+} from "@material-ui/core";
 
+import "./Host.css";
 import constants from "../../../includes/constants";
 import utilities from "../../../includes/utilities";
-import "./Host.css";
 
-const { AUTO_REVEAL_GRACE_PERIOD } = constants;
+const { AUTO_REVEAL_GRACE_PERIOD, ESTIMATES_MEAN_DECIMAL_PRECISION } = constants;
 const { delay, composeClassName } = utilities;
 
 export default class Host extends Component {
@@ -81,6 +90,8 @@ export default class Host extends Component {
   };
 
   estimate = ({ id, estimate }) => {
+    if (this.state.revealing) return;
+
     const { members } = this.state;
     members[id].estimate = estimate;
     this.setState({ members }, () => this.autoReveal());
@@ -102,49 +113,100 @@ export default class Host extends Component {
     }
   };
 
-  onAutoRevealToggle = () => {
+  toggleReveal = () => {
+    if (!this.state.revealing) {
+      this.reveal();
+    } else {
+      this.startNewRound();
+    }
+  };
+
+  toggleAutoReveal = () => {
     this.setState({ autoReveal: !this.state.autoReveal }, () => this.autoReveal());
   };
 
   /* Render logic. */
 
   render() {
+    let numberOfMembersWhoEstimated = 0;
+    let estimatesSum = 0;
+    const estimatesCount = {};
+
     const memberListItems = Object.keys(this.state.members).map((memberID) => {
       const member = this.state.members[memberID];
 
-      const className = composeClassName("member", {
-        estimated: "estimate" in member,
-      });
+      let color = "error";
+      if ("estimate" in member) {
+        color = "primary";
 
-      let status = "";
+        numberOfMembersWhoEstimated++;
+        estimatesSum += member.estimate;
+        if (!(member.estimate in estimatesCount)) {
+          estimatesCount[member.estimate] = 0;
+        }
+        estimatesCount[member.estimate]++;
+      }
+
+      let status = null;
       if (this.state.revealing) {
         if ("estimate" in member) status = `said ${member.estimate}`;
         else status = "did not estimate";
       }
 
       return (
-        <li
-          key={memberID}
-          className={className}
-        >
-          {member.name} {status}
-        </li>
+        <ListItem key={memberID}>
+          <ListItemText
+            primary={<Typography variant="title" color={color}>{member.name} {status}</Typography>}
+          />
+        </ListItem>
       );
     });
 
+    const estimatesMean = numberOfMembersWhoEstimated > 0 ? estimatesSum / numberOfMembersWhoEstimated : 0;
+    const estimatesMode = Object.keys(estimatesCount).reduce((currentMode, estimate) => {
+      if (currentMode === null || estimatesCount[estimate] > estimatesCount[currentMode]) return estimate;
+      else return currentMode;
+    }, null);
+
+    const memberList = memberListItems.length === 0 ? (
+      <Typography variant="body2">Nobody is here yet.</Typography>
+    ) : (
+      <List>{memberListItems}</List>
+    );
+
     const revealingInText = this.state.revealingIn === null ? null : `Revealing in ${this.state.revealingIn}`;
+
+    let resultText = null;
+    if (this.state.revealing) {
+      const roundedEstimatesMean = Math.round(estimatesMean * (10 ** ESTIMATES_MEAN_DECIMAL_PRECISION)) / 10 ** ESTIMATES_MEAN_DECIMAL_PRECISION;
+      resultText = numberOfMembersWhoEstimated > 0 ? (
+        <Fragment>
+          Mode: {estimatesMode}<br />
+          Mean: {roundedEstimatesMean}
+        </Fragment>
+      ) : "Nobody estimated :(";
+    }
 
     return (
       <div className="component-Host">
-        <div className="error">{this.state.error}</div>
-        <ul className="member-list">{memberListItems}</ul>
-        <button disabled={this.state.revealing} onClick={this.reveal}>Reveal</button>
-        <button onClick={this.startNewRound}>Start New Round</button>
-        <label>
-          <input type="checkbox" checked={this.state.autoReveal} onClick={this.onAutoRevealToggle} />
-          Auto-reveal once everyone has estimated
-        </label>
-        <p>{revealingInText}</p>
+        <Typography variant="subheading" gutterBottom color="error">{this.state.error}</Typography>
+        <Typography variant="headline" gutterBottom color="primary">{resultText}</Typography>
+        <div>{memberList}</div>
+        <Typography variant="caption" gutterBottom>{revealingInText}</Typography>
+        <FormControlLabel
+          checked={this.state.revealing}
+          onChange={this.toggleReveal}
+          control={<Switch color="primary" />}
+          label="Reveal estimates"
+        />
+        <div>
+          <FormControlLabel
+            checked={this.state.autoReveal}
+            onChange={this.toggleAutoReveal}
+            control={<Checkbox color="primary" />}
+            label="Auto-reveal once everyone has estimated"
+          />
+        </div>
       </div>
     );
   }

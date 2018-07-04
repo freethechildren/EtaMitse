@@ -1,0 +1,28 @@
+.component-App {
+  width: 100vw;
+  height: 100vh;
+
+  > .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    width: 100%;
+    max-width: 37.5rem;
+    height: 100%;
+
+    > .content {
+      display: flex;
+      flex-direction: column;
+
+      > .create-meeting {
+        margin-bottom: 1rem;
+      }
+
+      > .role {
+        margin-bottom: 1rem;
+      }
+    }
+  }
+}
