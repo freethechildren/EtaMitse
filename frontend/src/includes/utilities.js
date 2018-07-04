@@ -1,4 +1,11 @@
 export default {
+  /* duration in milliseconds */
+  delay: (duration) => {
+    return new Promise((resolve) => {
+      setTimeout(resolve, duration);
+    });
+  },
+
   getEnvironmentVariables: (variableNames) => {
     const variables = {};
     variableNames.forEach((variableName) => {

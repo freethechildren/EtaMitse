@@ -44,7 +44,7 @@ export default class App extends Component {
       actionListenerUnregisterer();
     });
   }
-  
+
   /* Connection and protocol logic. */
 
   connect = () => {
@@ -95,7 +95,7 @@ export default class App extends Component {
     this.connect();
   };
 
-  initiateAction = (action, data = {}, reactionListener) => {    
+  initiateAction = (action, data = {}, reactionListener) => {
     if (this.state.connection === null) return;
 
     const nonce = ++this.greatestKnownNonce;
