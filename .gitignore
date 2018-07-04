@@ -80,3 +80,4 @@ TASKS.md
 
 # misc
 .DS_Store
+*.diff
