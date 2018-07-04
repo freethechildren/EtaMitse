@@ -113,6 +113,8 @@ export default class App extends Component {
   /* Actions initiated. */
 
   setName = (name) => {
+    name = name.trim();
+
     this.initiateAction("setName", { name }, ({ success, error }) => {
       if (success) this.setState({ error: null, name });
       else this.setState({ error });
