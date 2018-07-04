@@ -169,7 +169,7 @@ export default class Host extends Component {
     }, null);
 
     const memberList = memberListItems.length === 0 ? (
-      <Typography variant="body2">Nobody is here yet.</Typography>
+      <Typography variant="body2">Nobody is here at the moment.</Typography>
     ) : (
       <List>{memberListItems}</List>
     );
