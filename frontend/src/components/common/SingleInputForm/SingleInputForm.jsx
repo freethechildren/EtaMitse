@@ -1,5 +1,6 @@
 import React, { PureComponent } from "react";
 import PropTypes from "prop-types";
+import { Button, Input } from "@material-ui/core";
 
 import "./SingleInputForm.css";
 
@@ -8,6 +9,13 @@ export default class SingleInputForm extends PureComponent {
     type: PropTypes.oneOf(["text", "number"]).isRequired,
     buttonText: PropTypes.string.isRequired,
     onSubmit: PropTypes.func.isRequired,
+    error: PropTypes.bool,
+    buttonVariant: PropTypes.string,
+  };
+
+  static defaultProps = {
+    error: false,
+    buttonVariant: "raised",
   };
 
   constructor(props) {
@@ -44,13 +52,13 @@ export default class SingleInputForm extends PureComponent {
   };
 
   render() {
-    const { type, buttonText, onSubmit, value, ...passthroughProps } = this.props;
+    const { type, buttonText, onSubmit, value, error, buttonVariant, ...passthroughProps } = this.props;
 
     return (
       <div className="component-SingleInputForm">
         <form onSubmit={this.onSubmit} noValidate>
-          <input {...passthroughProps} type={type} onChange={this.onChange} />
-          <button type="submit">{buttonText}</button>
+          <Input {...passthroughProps} type={type} onChange={this.onChange} error={error} />
+          <Button type="submit" variant={buttonVariant} color="primary">{buttonText}</Button>
         </form>
       </div>
     );

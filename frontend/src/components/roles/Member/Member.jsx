@@ -1,8 +1,9 @@
 import React, { Component } from "react";
+import { Typography, Button } from "@material-ui/core";
 
+import "./Member.css";
 import constants from "../../../includes/constants";
 import utilities from "../../../includes/utilities";
-import "./Member.css";
 
 const { POSSIBLE_ESTIMATES } = constants;
 const { composeClassName } = utilities;
@@ -59,28 +60,25 @@ export default class Member extends Component {
   /* Render logic. */
 
   render() {
+    const estimateButtons = POSSIBLE_ESTIMATES.map((possibleEstimate) => {
+      return (
+        <Button
+          key={possibleEstimate}
+          onClick={() => this.estimate(possibleEstimate)}
+          fullWidth
+          variant={this.state.estimate === possibleEstimate ? "raised" : "outlined"}
+          color="primary"
+          disabled={this.state.revealing}
+        >
+          {possibleEstimate}
+        </Button>
+      );
+    });
+
     return (
       <div className="component-Member">
-        <div className="error">{this.state.error}</div>
-        <div className="possible-estimates">
-          {
-            POSSIBLE_ESTIMATES.map((possibleEstimate) => {
-              const className = composeClassName("estimate", {
-                selected: this.state.estimate === possibleEstimate,
-              });
-
-              return (
-                <button
-                  key={possibleEstimate}
-                  className={className}
-                  onClick={() => this.estimate(possibleEstimate)}
-                >
-                  {possibleEstimate}
-                </button>
-              );
-            })
-          }
-        </div>
+        <Typography variant="subheading" gutterBottom color="error">{this.state.error}</Typography>
+        <div>{estimateButtons}</div>
       </div>
     );
   }

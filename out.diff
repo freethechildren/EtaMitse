@@ -1,0 +1,467 @@
+diff --git a/frontend/package.json b/frontend/package.json
+index 19f2d2b..803c4dc 100644
+--- a/frontend/package.json
++++ b/frontend/package.json
+@@ -10,10 +10,12 @@
+     "build": "FORCE_COLOR=1 run-s --print-label build:sass build:app"
+   },
+   "devDependencies": {
++    "@material-ui/core": "^1.3.0",
++    "node-sass-chokidar": "^1.3.0",
+     "npm-run-all": "^4.1.3",
+     "react": "^16.4.1",
+     "react-dom": "^16.4.1",
+     "react-scripts": "1.1.4",
+-    "node-sass-chokidar": "^1.3.0"
++    "typeface-roboto": "0.0.54"
+   }
+ }
+diff --git a/frontend/src/App.jsx b/frontend/src/App.jsx
+index ffe216c..6b4623f 100644
+--- a/frontend/src/App.jsx
++++ b/frontend/src/App.jsx
+@@ -1,9 +1,10 @@
+ import React, { Component, Fragment } from "react"
++import { CssBaseline, Typography, Button } from "@material-ui/core";
+ 
++import "./App.css";
+ import constants from "./includes/constants";
+ import { SingleInputForm } from "./components/common";
+ import { Host, Member } from "./components/roles";
+-import "./App.css";
+ 
+ const { SERVER_URL } = constants;
+ 
+@@ -163,10 +164,10 @@ export default class App extends Component {
+     // eslint-disable-next-line default-case
+     switch (this.state.meeting.role) {
+       case "host":
+-        return `You are hosting a meeting (${this.state.meeting.code}).`;
++        return `${this.state.name}'s meeting (${this.state.meeting.code})`;
+ 
+       case "member":
+-        return `You are in ${this.state.meeting.host.name}'s meeting (${this.state.meeting.code}).`;
++        return `${this.state.meeting.host.name}'s meeting (${this.state.meeting.code})`;
+     }
+ 
+     return null;
+@@ -184,6 +185,7 @@ export default class App extends Component {
+           placeholder="Name"
+           buttonText="Submit"
+           onSubmit={this.setName}
++          error={this.state.error !== null}
+         />
+       );
+     }
+@@ -191,16 +193,21 @@ export default class App extends Component {
+     if (this.state.meeting === null) {
+       return (
+         <Fragment>
+-          <h5>Host a meeting</h5>
+-          <button onClick={this.createMeeting}>Create meeting</button>
+-          <hr />
+-          <h5>Join a meeting</h5>
+-          <SingleInputForm
+-            type="number"
+-            placeholder="Meeting code"
+-            buttonText="Go"
+-            onSubmit={this.joinMeeting}
+-          />
++          <div className="create-meeting">
++            <Typography variant="title" gutterBottom>Host a meeting</Typography>
++            <Button onClick={this.createMeeting} variant="raised" color="primary">Create meeting</Button>
++          </div>
++          <div>
++            <Typography variant="title" gutterBottom>Join a meeting</Typography>
++            <SingleInputForm
++              type="number"
++              placeholder="Meeting code"
++              buttonText="Go"
++              buttonVariant="fab"
++              onSubmit={this.joinMeeting}
++              error={this.state.error !== null}
++            />
++          </div>
+         </Fragment>
+       );
+     }
+@@ -224,8 +231,8 @@ export default class App extends Component {
+ 
+     return (
+       <Fragment>
+-        <button onClick={this.leaveMeeting}>Leave Meeting</button>
+-        {roleComponent}
++        <div className="role">{roleComponent}</div>
++        <Button onClick={this.leaveMeeting} variant="raised" color="secondary">Leave Meeting</Button>
+       </Fragment>
+     );
+   }
+@@ -233,9 +240,12 @@ export default class App extends Component {
+   render() {
+     return (
+       <div className="component-App">
+-        <p className="error">{this.state.error}</p>
+-        <p className="status">{this.renderStatus()}</p>
+-        <div className="content">{this.renderContent()}</div>
++        <CssBaseline />
++        <div className="container">
++          <Typography variant="display1" gutterBottom>{this.renderStatus()}</Typography>
++          <Typography variant="subheading" gutterBottom color="error">{this.state.error}</Typography>
++          <div className="content">{this.renderContent()}</div>
++        </div>
+       </div>
+     );
+   }
+diff --git a/frontend/src/App.scss b/frontend/src/App.scss
+index e69de29..0bf44c8 100644
+--- a/frontend/src/App.scss
++++ b/frontend/src/App.scss
+@@ -0,0 +1,28 @@
++.component-App {
++  width: 100vw;
++  height: 100vh;
++
++  > .container {
++    display: flex;
++    flex-direction: column;
++    align-items: center;
++    justify-content: center;
++    margin: 0 auto;
++    width: 100%;
++    max-width: 37.5rem;
++    height: 100%;
++
++    > .content {
++      display: flex;
++      flex-direction: column;
++
++      > .create-meeting {
++        margin-bottom: 1rem;
++      }
++
++      > .role {
++        margin-bottom: 1rem;
++      }
++    }
++  }
++}
+\ No newline at end of file
+diff --git a/frontend/src/components/common/SingleInputForm/SingleInputForm.jsx b/frontend/src/components/common/SingleInputForm/SingleInputForm.jsx
+index 8a92dd8..680556a 100644
+--- a/frontend/src/components/common/SingleInputForm/SingleInputForm.jsx
++++ b/frontend/src/components/common/SingleInputForm/SingleInputForm.jsx
+@@ -1,5 +1,6 @@
+ import React, { PureComponent } from "react";
+ import PropTypes from "prop-types";
++import { Button, Input } from "@material-ui/core";
+ 
+ import "./SingleInputForm.css";
+ 
+@@ -8,6 +9,13 @@ export default class SingleInputForm extends PureComponent {
+     type: PropTypes.oneOf(["text", "number"]).isRequired,
+     buttonText: PropTypes.string.isRequired,
+     onSubmit: PropTypes.func.isRequired,
++    error: PropTypes.bool,
++    buttonVariant: PropTypes.string,
++  };
++
++  static defaultProps = {
++    error: false,
++    buttonVariant: "raised",
+   };
+ 
+   constructor(props) {
+@@ -44,13 +52,13 @@ export default class SingleInputForm extends PureComponent {
+   };
+ 
+   render() {
+-    const { type, buttonText, onSubmit, value, ...passthroughProps } = this.props;
++    const { type, buttonText, onSubmit, value, error, buttonVariant, ...passthroughProps } = this.props;
+ 
+     return (
+       <div className="component-SingleInputForm">
+         <form onSubmit={this.onSubmit} noValidate>
+-          <input {...passthroughProps} type={type} onChange={this.onChange} />
+-          <button type="submit">{buttonText}</button>
++          <Input {...passthroughProps} type={type} onChange={this.onChange} error={error} />
++          <Button type="submit" variant={buttonVariant} color="primary">{buttonText}</Button>
+         </form>
+       </div>
+     );
+diff --git a/frontend/src/components/roles/Host/Host.jsx b/frontend/src/components/roles/Host/Host.jsx
+index 4a57532..b58f29f 100644
+--- a/frontend/src/components/roles/Host/Host.jsx
++++ b/frontend/src/components/roles/Host/Host.jsx
+@@ -1,10 +1,19 @@
+-import React, { Component } from "react";
++import React, { Component, Fragment } from "react";
++import {
++  Typography,
++  FormControlLabel,
++  Checkbox,
++  Switch,
++  List,
++  ListItem,
++  ListItemText,
++} from "@material-ui/core";
+ 
++import "./Host.css";
+ import constants from "../../../includes/constants";
+ import utilities from "../../../includes/utilities";
+-import "./Host.css";
+ 
+-const { AUTO_REVEAL_GRACE_PERIOD } = constants;
++const { AUTO_REVEAL_GRACE_PERIOD, ESTIMATES_MEAN_DECIMAL_PRECISION } = constants;
+ const { delay, composeClassName } = utilities;
+ 
+ export default class Host extends Component {
+@@ -81,6 +90,8 @@ export default class Host extends Component {
+   };
+ 
+   estimate = ({ id, estimate }) => {
++    if (this.state.revealing) return;
++
+     const { members } = this.state;
+     members[id].estimate = estimate;
+     this.setState({ members }, () => this.autoReveal());
+@@ -102,49 +113,100 @@ export default class Host extends Component {
+     }
+   };
+ 
+-  onAutoRevealToggle = () => {
++  toggleReveal = () => {
++    if (!this.state.revealing) {
++      this.reveal();
++    } else {
++      this.startNewRound();
++    }
++  };
++
++  toggleAutoReveal = () => {
+     this.setState({ autoReveal: !this.state.autoReveal }, () => this.autoReveal());
+   };
+ 
+   /* Render logic. */
+ 
+   render() {
++    let numberOfMembersWhoEstimated = 0;
++    let estimatesSum = 0;
++    const estimatesCount = {};
++
+     const memberListItems = Object.keys(this.state.members).map((memberID) => {
+       const member = this.state.members[memberID];
+ 
+-      const className = composeClassName("member", {
+-        estimated: "estimate" in member,
+-      });
++      let color = "error";
++      if ("estimate" in member) {
++        color = "primary";
+ 
+-      let status = "";
++        numberOfMembersWhoEstimated++;
++        estimatesSum += member.estimate;
++        if (!(member.estimate in estimatesCount)) {
++          estimatesCount[member.estimate] = 0;
++        }
++        estimatesCount[member.estimate]++;
++      }
++
++      let status = null;
+       if (this.state.revealing) {
+         if ("estimate" in member) status = `said ${member.estimate}`;
+         else status = "did not estimate";
+       }
+ 
+       return (
+-        <li
+-          key={memberID}
+-          className={className}
+-        >
+-          {member.name} {status}
+-        </li>
++        <ListItem key={memberID}>
++          <ListItemText
++            primary={<Typography variant="title" color={color}>{member.name} {status}</Typography>}
++          />
++        </ListItem>
+       );
+     });
+ 
++    const estimatesMean = numberOfMembersWhoEstimated > 0 ? estimatesSum / numberOfMembersWhoEstimated : 0;
++    const estimatesMode = Object.keys(estimatesCount).reduce((currentMode, estimate) => {
++      if (currentMode === null || estimatesCount[estimate] > estimatesCount[currentMode]) return estimate;
++      else return currentMode;
++    }, null);
++
++    const memberList = memberListItems.length === 0 ? (
++      <Typography variant="body2">Nobody is here yet.</Typography>
++    ) : (
++      <List>{memberListItems}</List>
++    );
++
+     const revealingInText = this.state.revealingIn === null ? null : `Revealing in ${this.state.revealingIn}`;
+ 
++    let resultText = null;
++    if (this.state.revealing) {
++      const roundedEstimatesMean = Math.round(estimatesMean * (10 ** ESTIMATES_MEAN_DECIMAL_PRECISION)) / 10 ** ESTIMATES_MEAN_DECIMAL_PRECISION;
++      resultText = numberOfMembersWhoEstimated > 0 ? (
++        <Fragment>
++          Mode: {estimatesMode}<br />
++          Mean: {roundedEstimatesMean}
++        </Fragment>
++      ) : "Nobody estimated :(";
++    }
++
+     return (
+       <div className="component-Host">
+-        <div className="error">{this.state.error}</div>
+-        <ul className="member-list">{memberListItems}</ul>
+-        <button disabled={this.state.revealing} onClick={this.reveal}>Reveal</button>
+-        <button onClick={this.startNewRound}>Start New Round</button>
+-        <label>
+-          <input type="checkbox" checked={this.state.autoReveal} onClick={this.onAutoRevealToggle} />
+-          Auto-reveal once everyone has estimated
+-        </label>
+-        <p>{revealingInText}</p>
++        <Typography variant="subheading" gutterBottom color="error">{this.state.error}</Typography>
++        <Typography variant="headline" gutterBottom color="primary">{resultText}</Typography>
++        <div>{memberList}</div>
++        <Typography variant="caption" gutterBottom>{revealingInText}</Typography>
++        <FormControlLabel
++          checked={this.state.revealing}
++          onChange={this.toggleReveal}
++          control={<Switch color="primary" />}
++          label="Reveal estimates"
++        />
++        <div>
++          <FormControlLabel
++            checked={this.state.autoReveal}
++            onChange={this.toggleAutoReveal}
++            control={<Checkbox color="primary" />}
++            label="Auto-reveal once everyone has estimated"
++          />
++        </div>
+       </div>
+     );
+   }
+diff --git a/frontend/src/components/roles/Host/Host.scss b/frontend/src/components/roles/Host/Host.scss
+index 2ea9455..a7076fd 100644
+--- a/frontend/src/components/roles/Host/Host.scss
++++ b/frontend/src/components/roles/Host/Host.scss
+@@ -1,11 +1,9 @@
+ .component-Host {
+-  > .member-list {
+-    > .member {
+-      color: red;
++  display: flex;
++  flex-direction: column;
++  align-items: center;
+ 
+-      &.estimated {
+-        color: green;
+-      }
+-    }
++  > .auto-reveal {
++    display: block;
+   }
+ }
+diff --git a/frontend/src/components/roles/Member/Member.jsx b/frontend/src/components/roles/Member/Member.jsx
+index b5ecbcd..c4ce5ed 100644
+--- a/frontend/src/components/roles/Member/Member.jsx
++++ b/frontend/src/components/roles/Member/Member.jsx
+@@ -1,8 +1,9 @@
+ import React, { Component } from "react";
++import { Typography, Button } from "@material-ui/core";
+ 
++import "./Member.css";
+ import constants from "../../../includes/constants";
+ import utilities from "../../../includes/utilities";
+-import "./Member.css";
+ 
+ const { POSSIBLE_ESTIMATES } = constants;
+ const { composeClassName } = utilities;
+@@ -59,28 +60,25 @@ export default class Member extends Component {
+   /* Render logic. */
+ 
+   render() {
++    const estimateButtons = POSSIBLE_ESTIMATES.map((possibleEstimate) => {
++      return (
++        <Button
++          key={possibleEstimate}
++          onClick={() => this.estimate(possibleEstimate)}
++          fullWidth
++          variant={this.state.estimate === possibleEstimate ? "raised" : "outlined"}
++          color="primary"
++          disabled={this.state.revealing}
++        >
++          {possibleEstimate}
++        </Button>
++      );
++    });
++
+     return (
+       <div className="component-Member">
+-        <div className="error">{this.state.error}</div>
+-        <div className="possible-estimates">
+-          {
+-            POSSIBLE_ESTIMATES.map((possibleEstimate) => {
+-              const className = composeClassName("estimate", {
+-                selected: this.state.estimate === possibleEstimate,
+-              });
+-
+-              return (
+-                <button
+-                  key={possibleEstimate}
+-                  className={className}
+-                  onClick={() => this.estimate(possibleEstimate)}
+-                >
+-                  {possibleEstimate}
+-                </button>
+-              );
+-            })
+-          }
+-        </div>
++        <Typography variant="subheading" gutterBottom color="error">{this.state.error}</Typography>
++        <div>{estimateButtons}</div>
+       </div>
+     );
+   }
+diff --git a/frontend/src/components/roles/Member/Member.scss b/frontend/src/components/roles/Member/Member.scss
+index 74d33d9..e69de29 100644
+--- a/frontend/src/components/roles/Member/Member.scss
++++ b/frontend/src/components/roles/Member/Member.scss
+@@ -1,9 +0,0 @@
+-.component-Member {
+-  > .possible-estimates {
+-    > .estimate {
+-      display: block;
+-      height: 50px;
+-      width: 100%;
+-    }
+-  }
+-}
+diff --git a/frontend/src/includes/constants.js b/frontend/src/includes/constants.js
+index d9921db..8a29fb3 100644
+--- a/frontend/src/includes/constants.js
++++ b/frontend/src/includes/constants.js
+@@ -8,4 +8,5 @@ export default {
+   ]),
+   POSSIBLE_ESTIMATES: [0.5, 1, 2, 3, 5, 8, 13],
+   AUTO_REVEAL_GRACE_PERIOD: 2, // in seconds
++  ESTIMATES_MEAN_DECIMAL_PRECISION: 1,
+ };
+diff --git a/frontend/src/index.js b/frontend/src/index.js
+index 4e3c0f9..8cbdb99 100644
+--- a/frontend/src/index.js
++++ b/frontend/src/index.js
+@@ -1,7 +1,8 @@
+ import React from "react";
+ import ReactDOM from "react-dom";
++import "typeface-roboto";
+ 
+-import App from "./App";
+ import "./index.css";
++import App from "./App";
+ 
+ ReactDOM.render(<App />, document.getElementById("root"));

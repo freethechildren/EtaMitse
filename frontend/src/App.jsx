@@ -1,9 +1,10 @@
 import React, { Component, Fragment } from "react"
+import { CssBaseline, Typography, Button } from "@material-ui/core";
 
+import "./App.css";
 import constants from "./includes/constants";
 import { SingleInputForm } from "./components/common";
 import { Host, Member } from "./components/roles";
-import "./App.css";
 
 const { SERVER_URL } = constants;
 
@@ -44,7 +45,7 @@ export default class App extends Component {
       actionListenerUnregisterer();
     });
   }
-  
+
   /* Connection and protocol logic. */
 
   connect = () => {
@@ -95,7 +96,7 @@ export default class App extends Component {
     this.connect();
   };
 
-  initiateAction = (action, data = {}, reactionListener) => {    
+  initiateAction = (action, data = {}, reactionListener) => {
     if (this.state.connection === null) return;
 
     const nonce = ++this.greatestKnownNonce;
@@ -112,6 +113,8 @@ export default class App extends Component {
   /* Actions initiated. */
 
   setName = (name) => {
+    name = name.trim();
+
     this.initiateAction("setName", { name }, ({ success, error }) => {
       if (success) this.setState({ error: null, name });
       else this.setState({ error });
@@ -163,10 +166,10 @@ export default class App extends Component {
     // eslint-disable-next-line default-case
     switch (this.state.meeting.role) {
       case "host":
-        return `You are hosting a meeting (${this.state.meeting.code}).`;
+        return `${this.state.name}'s meeting (${this.state.meeting.code})`;
 
       case "member":
-        return `You are in ${this.state.meeting.host.name}'s meeting (${this.state.meeting.code}).`;
+        return `${this.state.meeting.host.name}'s meeting (${this.state.meeting.code})`;
     }
 
     return null;
@@ -184,6 +187,7 @@ export default class App extends Component {
           placeholder="Name"
           buttonText="Submit"
           onSubmit={this.setName}
+          error={this.state.error !== null}
         />
       );
     }
@@ -191,16 +195,21 @@ export default class App extends Component {
     if (this.state.meeting === null) {
       return (
         <Fragment>
-          <h5>Host a meeting</h5>
-          <button onClick={this.createMeeting}>Create meeting</button>
-          <hr />
-          <h5>Join a meeting</h5>
-          <SingleInputForm
-            type="number"
-            placeholder="Meeting code"
-            buttonText="Go"
-            onSubmit={this.joinMeeting}
-          />
+          <div className="create-meeting">
+            <Typography variant="title" gutterBottom>Host a meeting</Typography>
+            <Button onClick={this.createMeeting} variant="raised" color="primary">Create meeting</Button>
+          </div>
+          <div>
+            <Typography variant="title" gutterBottom>Join a meeting</Typography>
+            <SingleInputForm
+              type="number"
+              placeholder="Meeting code"
+              buttonText="Go"
+              buttonVariant="fab"
+              onSubmit={this.joinMeeting}
+              error={this.state.error !== null}
+            />
+          </div>
         </Fragment>
       );
     }
@@ -224,8 +233,8 @@ export default class App extends Component {
 
     return (
       <Fragment>
-        <button onClick={this.leaveMeeting}>Leave Meeting</button>
-        {roleComponent}
+        <div className="role">{roleComponent}</div>
+        <Button onClick={this.leaveMeeting} variant="raised" color="secondary">Leave Meeting</Button>
       </Fragment>
     );
   }
@@ -233,9 +242,12 @@ export default class App extends Component {
   render() {
     return (
       <div className="component-App">
-        <p className="error">{this.state.error}</p>
-        <p className="status">{this.renderStatus()}</p>
-        <div className="content">{this.renderContent()}</div>
+        <CssBaseline />
+        <div className="container">
+          <Typography variant="display1" gutterBottom>{this.renderStatus()}</Typography>
+          <Typography variant="subheading" gutterBottom color="error">{this.state.error}</Typography>
+          <div className="content">{this.renderContent()}</div>
+        </div>
       </div>
     );
   }

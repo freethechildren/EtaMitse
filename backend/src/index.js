@@ -15,7 +15,7 @@ const actionListeners = {
       return { success: false, error: "Name must be a string." };
     }
 
-    if (name.length === 0) {
+    if (name.trim().length === 0) {
       return { success: false, error: "Name cannot be empty." };
     }
 
