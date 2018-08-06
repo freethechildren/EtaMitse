@@ -184,7 +184,8 @@ let lastClientID = -1;
     },
   };
 
-  console.log(`${request.connection.remoteAddress} connected and named client #${clientID}.`);
+  const remoteAddress = request.headers["x-forwarded-for"] || request.connection.remoteAddress;
+  console.log(`${remoteAddress} connected and named client #${clientID}.`);
 
   connection.on("message", (message) => {
     const { nonce, type, payload } = JSON.parse(message);

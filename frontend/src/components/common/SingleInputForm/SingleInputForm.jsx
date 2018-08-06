@@ -57,7 +57,7 @@ export default class SingleInputForm extends PureComponent {
     return (
       <div className="component-SingleInputForm">
         <form onSubmit={this.onSubmit} noValidate>
-          <Input {...passthroughProps} type={type} onChange={this.onChange} error={error} />
+          <Input {...passthroughProps} type={type} onChange={this.onChange} error={error} autoFocus />
           <Button type="submit" variant={buttonVariant} color="primary">{buttonText}</Button>
         </form>
       </div>

@@ -3,10 +3,8 @@ import { Typography, Button } from "@material-ui/core";
 
 import "./Member.css";
 import constants from "../../../includes/constants";
-import utilities from "../../../includes/utilities";
 
 const { POSSIBLE_ESTIMATES } = constants;
-const { composeClassName } = utilities;
 
 export default class Member extends Component {
   /* Instance fields. */

@@ -14,7 +14,7 @@ import constants from "../../../includes/constants";
 import utilities from "../../../includes/utilities";
 
 const { AUTO_REVEAL_GRACE_PERIOD, ESTIMATES_MEAN_DECIMAL_PRECISION } = constants;
-const { delay, composeClassName } = utilities;
+const { delay } = utilities;
 
 export default class Host extends Component {
   /* Instance fields. */
@@ -156,7 +156,7 @@ export default class Host extends Component {
       return (
         <ListItem key={memberID}>
           <ListItemText
-            primary={<Typography variant="title" color={color}>{member.name} {status}</Typography>}
+            primary={<Typography variant="title" color={color} align="right">{member.name} {status}</Typography>}
           />
         </ListItem>
       );
@@ -187,8 +187,8 @@ export default class Host extends Component {
     return (
       <div className="component-Host">
         <Typography variant="subheading" gutterBottom color="error">{this.state.error}</Typography>
-        <Typography variant="headline" gutterBottom color="primary">{resultText}</Typography>
-        <div>{memberList}</div>
+        <Typography variant="headline" gutterBottom color="secondary">{resultText}</Typography>
+        <div className="member-list">{memberList}</div>
         <Typography variant="caption" gutterBottom>{revealingInText}</Typography>
         <FormControlLabel
           checked={this.state.revealing}
