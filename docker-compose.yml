@@ -1,0 +1,26 @@
+version: '3'
+services:
+  server:
+    container_name: estimator-backend
+    build:
+      context: ./backend/
+      dockerfile: Dockerfile
+    volumes:
+      - ./backend/:/usr/app
+      - /usr/app/node_modules
+    ports:
+      - "8080:8080"
+    command: yarn start
+    restart: unless-stopped
+  client:
+    container_name: estimator-frontend
+    build: 
+      context: ./frontend/
+    command: yarn start
+    volumes:
+      - ./frontend/:/usr/app
+      - /usr/app/node_modules
+    depends_on: 
+      - server
+    ports:
+      - "3000:3000"
